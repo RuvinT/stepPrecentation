@@ -1,0 +1,49 @@
+<div class="p-5 text-center bg-light" style="margin-top: 58px;">
+  <h1 class="mb-3">PyStock</h1>
+  <h4 class="mb-3">Stock market analysis</h4>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div>
+        <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height: '360px'}"
+          (chartInstance)="getChartInstance($event)"></canvasjs-chart>
+      </div>
+    </div>
+    <div class="col">
+
+      <div class="control-section">
+        <div>
+          <ejs-stockchart id='StockChartCandle' [chartArea]='chartArea' [primaryXAxis]='primaryXAxis'
+            style="display:block;" [primaryYAxis]='primaryYAxis' [crosshair]='crosshair' [title]='title'
+            [tooltip]='tooltip' (tooltipRender)='tooltipRender($event)' (axisLabelRender)='axisLabelRender($event)'
+            (load)='load($event)' [seriesType]='seriesType'
+            [indicatorType]='indicatorType' [trendlineType]='trendlineType'>
+            
+            <e-stockchart-axes>
+              <e-stockchart-axis rowIndex=1 name='yAxis1' opposedPosition=true labelPosition='Inside'
+                tickPosition='Inside'>
+              </e-stockchart-axis>
+            </e-stockchart-axes>
+            <e-stockchart-rows>
+              <e-stockchart-row height=10%></e-stockchart-row>
+              <e-stockchart-row height=90%></e-stockchart-row>
+            </e-stockchart-rows>
+            <e-stockchart-series-collection>
+              <e-stockchart-series [dataSource]='data1' type='Candle' xName='x' yName='high' yAxisName='yAxis1'
+                high='high' low='low'> 
+                <e-trendlines visible='false'>
+                
+                <e-trendline visible='false'></e-trendline>
+                </e-trendlines>
+              </e-stockchart-series>
+              <e-stockchart-series [dataSource]='data1' type='Column' xName='x' yName='volume' high='high' low='low'
+                name='Apple Inc' [enableTooltip]='columnTooltip'> </e-stockchart-series>
+            </e-stockchart-series-collection>
+          </ejs-stockchart>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
