@@ -11,7 +11,7 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-# Connect to database
+# Connection to database
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
@@ -21,8 +21,10 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
+# Get request send to get graph data from the database
 @app.route("/stock_prices", methods=["GET"])
 def stock_prices():
+    # SQL query to select all columns from stock_prices table
     mycursor.execute("SELECT * FROM stock_prices")
     result = mycursor.fetchall()
     stocks = [{"x": date, "open": open,"high":high,"low":low,"close":close,"volume": volume} for date, open, high, low, close, volume in result]

@@ -16,7 +16,7 @@ Chart.register(...registerables);
 })
 export class AppComponent {
    
-    title = 'py-stock';
+    title = 'Apple';
     public data1: Object[];
 
     constructor(private stockDataService: StockDataService) {
@@ -32,7 +32,6 @@ export class AppComponent {
                   x: item.x
                 };
               });    
-         // console.log(stockDataArray)
           this.data1 = stockDataArray;
         });
         
@@ -54,12 +53,7 @@ export class AppComponent {
     public seriesType: string[] = ['Line','OHLC','Spline','Candle'];
 
     public indicatorType: string[] = ['Macd'];
-    public trendlineType: string[]=['Linear','Exponential','Polynomial','Moving Average'] ;
-
-
-  
- 
-  
+    public trendlineType: string[]=['Linear','Exponential','Polynomial','Moving Average'] ;  
     
     public primaryXAxis: Object = {
         valueType: 'DateTime', majorGridLines: { width: 0 }, crosshairTooltip: { enable: true }
@@ -110,7 +104,7 @@ export class AppComponent {
         zoomEnabled: true,
         theme: "light1",
         title: {
-            text: "Share Value of Two Companies"
+            text: "Share value of Apple and Windows"
         },
         axisX: {
             title: "chart updates every 2 secs"
@@ -142,14 +136,14 @@ export class AppComponent {
             yValueFormatString: "$####.00",
             xValueFormatString: "hh:mm:ss TT",
             showInLegend: true,
-            name: "Company A",
+            name: "Apple",
             dataPoints: this.dataPoints1
         }, {
             type: "line",
             xValueType: "dateTime",
             yValueFormatString: "$####.00",
             showInLegend: true,
-            name: "Company B",
+            name: "Microsoft",
             dataPoints: this.dataPoints2
         }]
     }
@@ -195,8 +189,8 @@ export class AppComponent {
         }
 
         // updating legend text with  updated with y Value 
-        this.chart.options.data[0].legendText = " Company A  $" + CanvasJS.formatNumber(this.yValue1, "#,###.00");
-        this.chart.options.data[1].legendText = " Company B  $" + CanvasJS.formatNumber(this.yValue2, "#,###.00");
+        this.chart.options.data[0].legendText = " Apple  $" + CanvasJS.formatNumber(this.yValue1, "#,###.00");
+        this.chart.options.data[1].legendText = " Microsoft  $" + CanvasJS.formatNumber(this.yValue2, "#,###.00");
         this.chart.render();
     }
     ngAfterViewInit() {

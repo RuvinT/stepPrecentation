@@ -9,16 +9,13 @@ Created on Sun Feb 12 22:58:43 2023
 
 import numpy as np
 import pandas as pd
-import pandas_datareader as web
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import Dense, LSTM
 import matplotlib.pyplot as plt
 import math
-from keras.models import Sequential
-from keras.layers import LSTM
 from keras.layers import Dropout
-from keras.layers import Dense
+
 
 
 df = pd.read_csv('AAPL.csv')
