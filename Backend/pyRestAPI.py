@@ -27,7 +27,8 @@ def stock_prices():
     # SQL query to select all columns from stock_prices table
     mycursor.execute("SELECT * FROM stock_prices")
     result = mycursor.fetchall()
-    stocks = [{"x": date, "open": open,"high":high,"low":low,"close":close,"volume": volume} for date, open, high, low, close, volume in result]
+    stocks = [{"x": date, "open": open,"high":high,"low":low,"close":close,"volume": volume} 
+              for date, open, high, low, close, volume in result]
     response = jsonify(stocks)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response

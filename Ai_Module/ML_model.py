@@ -26,15 +26,6 @@ df['Date'] = pd.to_datetime(df['Date'], format='%d-%m-%Y', dayfirst=True)
 # Filter the rows based on the 'Date' column
 df = df[df['Date'].dt.year >= 2016]
 
-
-
-plt.figure(figsize=(16, 8))
-plt.title( 'Close Price History')
-plt.plot (df[ 'Date'],df[ 'Close'])
-plt.xlabel( 'Date', fontsize=18)
-plt.ylabel ( "Close Price USD ($)")
-plt.show()
-
 #Create a new dataframe with only the 'Close column
 data = df. filter (['Close'])
 
@@ -52,8 +43,7 @@ scaled_data = scaler.fit_transform(dataset)
 train_data = scaled_data[0:training_data_len , :]
 #Split the data into x_train and y_train data sets
 
-# Create the scaled training data set
-train_data = scaled_data[0:int(training_data_len), :]
+
 # Split the data into x_train and y_train data sets
 x_train = []
 y_train = []

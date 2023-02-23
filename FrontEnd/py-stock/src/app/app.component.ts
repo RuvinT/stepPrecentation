@@ -36,23 +36,11 @@ export class AppComponent {
         });
         
     }
-    /**
-     * Type of series to be drawn in radar or polar series. They are
-     *  'Line'
-     *  'Column'
-     *  'Area'
-     *  'Scatter'
-     *  'Spline'
-     *  'StackingColumn'
-     *  'StackingArea'
-     *  'RangeColumn'
-     *  'SplineArea'
-     *
-     * @default 'Line'
-     */
+    
     public seriesType: string[] = ['Line','OHLC','Spline','Candle'];
 
-    public indicatorType: string[] = ['Macd'];
+    public indicatorType: string[] = ['Macd','Stochastic'];
+    
     public trendlineType: string[]=['Linear','Exponential','Polynomial','Moving Average'] ;  
     
     public primaryXAxis: Object = {
