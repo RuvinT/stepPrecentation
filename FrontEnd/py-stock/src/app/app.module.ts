@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,7 +22,8 @@ var CanvasJSChart = CanvasJSAngularChart.CanvasJSChart;
     StockChartModule,
     ChartAllModule,
     RangeNavigatorAllModule,
-    HttpClientModule 
+    HttpClientModule ,
+    FormsModule
   ],
   providers: [ DateTimeService, LegendService, TooltipService, DataLabelService, CandleSeriesService ],
   bootstrap: [AppComponent]

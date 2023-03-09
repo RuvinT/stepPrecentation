@@ -7,6 +7,8 @@ declare var require: any;
 var CanvasJS = require('../assets/canvasjs.min');
 import { StockDataService } from './stock-data-service.service';
 import {StockData} from './StockDataModel';
+import { PredictStockPriceModel } from './PredictStockPriceModel';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 Chart.register(...registerables);
 @Component({
@@ -18,6 +20,15 @@ export class AppComponent {
    
     title = 'Apple';
     public data1: Object[];
+    
+    predictStockPriceModel: PredictStockPriceModel = {
+        date: '',
+        low: 0,
+        open: 0,
+        high: 0,
+        close: 0
+      };
+
 
     constructor(private stockDataService: StockDataService) {
         this.stockDataService.getStockData().subscribe(data => {
@@ -36,7 +47,24 @@ export class AppComponent {
         });
         
     }
-    
+
+    dataField1: string;
+    dataField2: string;
+
+    onSubmit() {
+        const observer = {
+            next: (response:HttpClient) => {
+              console.log('Response:', response);
+              this.dataField1 = response[0].binary;
+              this.dataField2 = response[0].probability;
+            },
+            error: (error: HttpErrorResponse) => {
+              console.error('Error:', error);
+              // Handle the error here
+            }
+          };
+        this.stockDataService.sendStockData(this.predictStockPriceModel).subscribe(observer);
+    }
     public seriesType: string[] = ['Line','OHLC','Spline','Candle'];
 
     public indicatorType: string[] = ['Macd','Stochastic'];

@@ -1,9 +1,10 @@
-<div class="p-5 text-center bg-light" style="margin-top: 58px;">
+<div class="p-2 text-center bg-light" style="margin-top: 58px;">
   <h1 class="mb-3">PyStock</h1>
   <h4 class="mb-3">Stock market analysis</h4>
 </div>
 
 <div class="container">
+
   <div class="row">
     <div class="col">
       <div>
@@ -18,9 +19,9 @@
           <ejs-stockchart id='StockChartCandle' [chartArea]='chartArea' [primaryXAxis]='primaryXAxis'
             style="display:block;" [primaryYAxis]='primaryYAxis' [crosshair]='crosshair' [title]='title'
             [tooltip]='tooltip' (tooltipRender)='tooltipRender($event)' (axisLabelRender)='axisLabelRender($event)'
-            (load)='load($event)' [seriesType]='seriesType'
-            [indicatorType]='indicatorType' [trendlineType]='trendlineType'>
-            
+            (load)='load($event)' [seriesType]='seriesType' [indicatorType]='indicatorType'
+            [trendlineType]='trendlineType'>
+
             <e-stockchart-axes>
               <e-stockchart-axis rowIndex=1 name='yAxis1' opposedPosition=true labelPosition='Inside'
                 tickPosition='Inside'>
@@ -32,10 +33,10 @@
             </e-stockchart-rows>
             <e-stockchart-series-collection>
               <e-stockchart-series [dataSource]='data1' type='Candle' xName='x' yName='high' yAxisName='yAxis1'
-                high='high' low='low'> 
+                high='high' low='low'>
                 <e-trendlines visible='false'>
-                
-                <e-trendline visible='false'></e-trendline>
+
+                  <e-trendline visible='false'></e-trendline>
                 </e-trendlines>
               </e-stockchart-series>
               <e-stockchart-series [dataSource]='data1' type='Column' xName='x' yName='volume' high='high' low='low'
@@ -45,5 +46,47 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="p-5">
+    <ng-container>
+      <div class="form-group row">
+        <div class="form-group col-md-2">
+          <label for="dateInput">Date</label>
+          <input type="date" class="form-control" id="dateInput" [(ngModel)]="predictStockPriceModel.date">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="lowInput">Low</label>
+          <input type="number" class="form-control" id="lowInput" [(ngModel)]="predictStockPriceModel.low">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="openInput">Open</label>
+          <input type="number" class="form-control" id="openInput" [(ngModel)]="predictStockPriceModel.open">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="highInput">High</label>
+          <input type="number" class="form-control" id="highInput" [(ngModel)]="predictStockPriceModel.high">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="closeInput">Close</label>
+          <input type="number" class="form-control" id="closeInput" [(ngModel)]="predictStockPriceModel.close">
+        </div>
+        <div class="form-group col-md-2">
+          <div class="pt-4"></div>
+          <button type="submit" class="btn btn-primary" (click)="onSubmit()">Submit</button>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container >
+      <div class="form-group row p-2">
+      <div class="form-group col-md-2">
+        <label for="binaryInput">Binary</label>
+        <input type="text" [(ngModel)]="dataField1">
+      </div>
+      <div class="form-group col-md-2">
+        <label for="proInput">Probability</label>
+        <input type="text" [(ngModel)]="dataField2">
+      </div>
+    </div>
+    </ng-container>
   </div>
 </div>
