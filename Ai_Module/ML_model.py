@@ -25,7 +25,7 @@ from xgboost import XGBClassifier
 
 
 
-df = pd.read_csv('AAPL.csv')
+df = pd.read_csv('TSCO.csv')
 
 # Convert the 'Date' column to a datetime object
 df['Date'] = pd.to_datetime(df['Date'], format='%d-%m-%Y', dayfirst=True)
@@ -112,11 +112,11 @@ train_accuracy = history.history['accuracy'][-1]
 print('Training accuracy:', train_accuracy)
 
 # Save trained model to file
-model.save('my_model.h5')
+model.save('TSCO_model.h5')
 
 import joblib
 
-joblib.dump(scaler, 'scaler.pkl')
+joblib.dump(scaler, 'TSCO_scaler.pkl')
 
 # Get the models predicted price values 
 
