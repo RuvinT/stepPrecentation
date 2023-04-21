@@ -1,18 +1,18 @@
-<div class="p-2 text-center bg-primary" style="margin-top: 20px;">
-    <h1 class="mb-3 font-Lobster">PyStock</h1>
-    <h4 class="mb-3">Stock market analysis dashboard</h4>
+<div class="p-2 text-center bg-primary" style="margin-top: 50px;">
+    <h1 class="mb-3 font-Lobster text-white">Stalkers</h1>
+    <h4 class="mb-3 text-white">Stock market analysis dashboard</h4>
 </div>
 
-<div class="container">
+<div >
     <div class="pt-4"></div>
     <div class="row">
 
         <div>
-            <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height: '600px'}"
+            <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height: '800px'}"
                 (chartInstance)="getChartInstance($event)"></canvasjs-chart>
         </div>
     </div>
-    <div class="p-2 text-center bg-light" style="margin-top: 20px;margin-bottom: 20px;">
+    <div class="p-2 text-center bg-light" style="margin-top: 50px;margin-bottom: 50px;">
     <h1 class="mb-3">Stock prices of stocks</h1>
     </div>
     <div class="row">
@@ -20,7 +20,7 @@
         <select id="myDropdown" (change)="onSelectionChange($event)" class="btn btn-primary dropdown-toggle">
             <option value="aapl">Apple</option>
             <option value="msft">Microsoft</option>
-            <option value="tesla">Tesla</option>
+            <option value="tsla">Tesla</option>
             <option value="ibm">IBM</option>
             <option value="ford">Ford</option>
             <option value="nokia">Nokia</option>
@@ -28,7 +28,7 @@
         <div class="control-section">
             <div>
                 <ejs-stockchart id='StockChartCandle' [chartArea]='chartArea' [primaryXAxis]='primaryXAxis'
-                    style="display:block;" [primaryYAxis]='primaryYAxis' [crosshair]='crosshair' [title]='title'
+                    style="display:block;height: 800px;" [primaryYAxis]='primaryYAxis' [crosshair]='crosshair' [title]='title'
                     [tooltip]='tooltip' (tooltipRender)='tooltipRender($event)'
                     (axisLabelRender)='axisLabelRender($event)' (load)='load($event)' [seriesType]='seriesType'
                     [indicatorType]='indicatorType' [trendlineType]='trendlineType'>
@@ -73,10 +73,11 @@
                             class="btn btn-primary dropdown-toggle">
                             <option value="aapl">Apple</option>
                             <option value="msft">Microsoft</option>
-                            <option value="tesla">Tesla</option>
+                            <option value="tsla">Tesla</option>
                             <option value="ibm">IBM</option>
                             <option value="ford">Ford</option>
                             <option value="nokia">Nokia</option>
+                            <option value="general">General</option>
                         </select>
                     </div>
                     <ng-template #silverUser>
@@ -92,7 +93,7 @@
                 </div>
                 <div class="form-group col-md-2">
                     <label for="dateInput">Date</label>
-                    <input type="date" class="form-control" id="dateInput" [(ngModel)]="predictStockPriceModel.date">
+                    <input type="date" class="form-control" id="dateInput" [(ngModel)]="predictStockPriceModel.date" max="{{ maxDate }}">
                 </div>
                 <div class="form-group col-md-1">
                     <label for="lowInput">Low</label>
@@ -121,10 +122,10 @@
         <ng-container>
             <div class="form-group row">
                 <div class="pt-4"></div>
-                <div class="form-group col-md-3 row">
+                <div class="form-group col-md-5 row">
                     
-                    <label class="col-form-label form-control-lg col-6">Buy stock:</label>
-                    <label class="col-form-label form-control-lg col-6" [ngClass]="{'text-success': dataField1 === 'Yes', 'text-danger': dataField1 === 'No'}">
+                    <label class="col-form-label form-control-lg col-8">Is stock profitable:</label>
+                    <label class="col-form-label form-control-lg col-2" [ngClass]="{'text-success': dataField1 === 'Yes', 'text-danger': dataField1 === 'No'}">
                          {{ dataField1 }}
                       </label>
                     
@@ -135,5 +136,9 @@
                 </div>
             </div>
         </ng-container>
+        <div class="pt-4"></div>
+        <div class="row" *ngIf="premior">
+            <canvasjs-chart id="chartContainer" [styles]="{width: '100%', height: '600px'}"></canvasjs-chart>    
+        </div>  
     </div>
 </div>

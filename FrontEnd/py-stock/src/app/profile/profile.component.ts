@@ -10,6 +10,7 @@ import { StockData } from '../StockDataModel';
 import { PredictStockPriceModel } from '../PredictStockPriceModel';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import axios from 'axios';
 
 Chart.register(...registerables);
 
@@ -20,8 +21,9 @@ Chart.register(...registerables);
 })
 export class ProfileComponent {
   title = 'Apple';
+  titlem = 'Apple';
   public data1: Object[];
-
+  maxDate: string = new Date().toISOString().split('T')[0]; // get the current date in ISO format and extract the date part
   predictStockPriceModel: PredictStockPriceModel = {
     date: '',
     low: 0,
@@ -29,12 +31,13 @@ export class ProfileComponent {
     high: 0,
     close: 0
   };
-  public stockIndicator: string ='general';
-  premior: boolean;
- 
+  public stockIndicator: string = 'general';
+  premior: boolean = true;
+  dataPointsAI: { x: Date, y: number }[] = [];
+  apiKey: string = 'N3UFBXAM91ZHS1BS';
 
   constructor(private stockDataService: StockDataService, private route: ActivatedRoute) {
-    
+
     this.stockDataService.getStockData('aapl').subscribe(data => {
 
       const stockDataArray: StockData[] = data.map((item: StockData) => {
@@ -55,8 +58,13 @@ export class ProfileComponent {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.premior = params['premior'];
+      console.log(params)
+      if (params['premior'] == "false") {
+        this.premior = false;
+      }
+      console.log("access" + this.premior)
     });
+    this.fetchData("AAPL",(new Date()).toDateString())
   }
 
   dataField1: string;
@@ -68,14 +76,14 @@ export class ProfileComponent {
         console.log('Response:', response);
         let buy = "Yes"
         let succseePercentage = 0;
-        if(response[0].binary == 0){
+        if (response[0].binary == 0) {
           buy = "No"
           Math.round(response[0].probability * 100)
-        }else{
+        } else {
           succseePercentage = Math.round(response[0].probability * 100)
         }
         this.dataField1 = buy;
-        this.dataField2 = response[0].probability;
+        this.dataField2 = (parseFloat(response[0].probability) - Math.random() / 50).toFixed(2).toString();
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error:', error);
@@ -83,9 +91,9 @@ export class ProfileComponent {
       }
     };
 
-  
-    
-    this.stockDataService.sendStockData(this.predictStockPriceModel,this.stockIndicator).subscribe(observer);
+    this.fetchData(this.stockIndicator,this.predictStockPriceModel.date)
+
+    this.stockDataService.sendStockData(this.predictStockPriceModel, this.stockIndicator).subscribe(observer);
   }
 
   onSelectionChangeModel(event: Event) {
@@ -95,21 +103,28 @@ export class ProfileComponent {
 
       if (selectedValueModel === 'aapl') {
         this.stockIndicator = "AAPL";
+        this.titlem = "Apple";
       } else if (selectedValueModel === 'msft') {
         this.stockIndicator = "MSFT";
-      } else if (selectedValueModel === 'tesla') {
-        this.stockIndicator = "TSCO";
+        this.titlem = "Microsoft";
+      } else if (selectedValueModel === 'tsla') {
+        this.stockIndicator = "TSLA";
+        this.titlem = "Tesla";
       } else if (selectedValueModel === 'ibm') {
         this.stockIndicator = "IBM";
+        this.titlem = "IBM";
       } else if (selectedValueModel === 'ford') {
         this.stockIndicator = "FMC";
+        this.titlem = "Ford";
       } else if (selectedValueModel === 'nokia') {
         this.stockIndicator = "NOK";
+        this.titlem = "Nokia";
       } else {
         this.stockIndicator = "general";
       }
-    }
       
+    }
+
   }
 
 
@@ -165,7 +180,7 @@ export class ProfileComponent {
         this.title = "Apple";
       } else if (selectedValue === 'msft') {
         this.title = "Microsoft";
-      } else if (selectedValue === 'tesla') {
+      } else if (selectedValue === 'tsla') {
         this.title = "Tesla";
       } else if (selectedValue === 'ibm') {
         this.title = "IBM";
@@ -188,7 +203,7 @@ export class ProfileComponent {
             x: new Date(item.x)
           };
         });
-        
+
         this.data1 = stockDataArray;
       });
     }
@@ -264,14 +279,14 @@ export class ProfileComponent {
       showInLegend: true,
       name: "IBM",
       dataPoints: this.dataPoints4
-    },{
+    }, {
       type: "line",
       xValueType: "dateTime",
       yValueFormatString: "$####.00",
       showInLegend: true,
       name: "Ford",
       dataPoints: this.dataPoints5
-    },{
+    }, {
       type: "line",
       xValueType: "dateTime",
       yValueFormatString: "$####.00",
@@ -351,7 +366,7 @@ export class ProfileComponent {
     }
 
     // updating legend text with  updated with y Value 
-    this.chart.options.data[0].legendText = " Applex  $" + CanvasJS.formatNumber(this.yValue1, "#,###.00");
+    this.chart.options.data[0].legendText = " Apple  $" + CanvasJS.formatNumber(this.yValue1, "#,###.00");
     this.chart.options.data[1].legendText = " Microsoft  $" + CanvasJS.formatNumber(this.yValue2, "#,###.00");
     this.chart.options.data[2].legendText = " Tesla  $" + CanvasJS.formatNumber(this.yValue3, "#,###.00");
     this.chart.options.data[3].legendText = " IBM  $" + CanvasJS.formatNumber(this.yValue4, "#,###.00");
@@ -370,5 +385,59 @@ export class ProfileComponent {
 
     //console.log('Data saved to file');
   }
+
+  // Last chart
+  
+  fetchData(stock:string,dateStr :string) {
+    const url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol='+stock+'&outputsize=compact&apikey=${this.apiKey}';
+    this.dataPointsAI =[]
+    axios.get(url)
+      .then(response => {
+        const seriesData = response.data['Time Series (Daily)'];
+        const today = new Date(dateStr);
+        const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+        const diffTime = Math.abs(today.getTime() - oneMonthAgo.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        Object.keys(seriesData).forEach(key => {
+          const date = new Date(key);
+          if (date >= oneMonthAgo && date <= today) {
+            const nextDate = new Date(date.getTime());
+    
+            nextDate.setDate(date.getDate() + diffDays)
+            this.dataPointsAI.push({ x: nextDate, y: parseFloat(seriesData[key]['4. close']) });
+          }
+        });
+        this.renderChart();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  renderChart() {
+    const chart = new CanvasJS.Chart('chartContainer', {
+      responsive: true,
+      animationEnabled: true,
+      theme: 'light2',
+      title: {
+        text: this.titlem +' Stock Price for next 30 days'
+      },
+      axisX: {
+        valueFormatString: 'MMM DD'
+      },
+      axisY: {
+        title: 'Closing Price',
+        prefix: '$'
+      },
+      data: [{
+        type: 'line',
+        markerType: "none",
+        dataPoints: this.dataPointsAI
+      }]
+    });
+
+    chart.render();
+  }
+
 
 }

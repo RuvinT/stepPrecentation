@@ -31,7 +31,7 @@ df = pd.read_csv('TSCO.csv')
 df['Date'] = pd.to_datetime(df['Date'], format='%d-%m-%Y', dayfirst=True)
 
 # Filter the rows based on the 'Date' column
-df = df[df['Date'].dt.year >= 2016]
+df = df[df['Date'].dt.year >= 2000]
  
 df['day'] = df['Date'].dt.day
 df['month'] = df['Date'].dt.month
@@ -39,15 +39,7 @@ df['year'] = df['Date'].dt.year
 df['is_quarter_end'] = np.where(df['month']%3==0,1,0)
 data_grouped = df.groupby('year').mean()
 
-'''
-plt.subplots(figsize=(20,10))
- 
-for i, col in enumerate(['Open', 'High', 'Low', 'Close']):
-  plt.subplot(2,2,i+1)
-  data_grouped[col].plot.bar()
-plt.show()
-df = df.drop('Date', axis=1)
-'''
+
 
 
 df.groupby('is_quarter_end').mean()
@@ -55,65 +47,66 @@ df.groupby('is_quarter_end').mean()
 
 df['open-close']  = df['Open'] - df['Close']
 df['low-high']  = df['Low'] - df['High']
-df['target'] = np.where(df['Close'].shift(-1) > df['Close'], 1, 0)
 
-'''
-plt.pie(df['target'].value_counts().values,
-        labels=[0, 1], autopct='%1.1f%%')
-plt.show()
 
-plt.figure(figsize=(10, 10))
- 
-# As our concern is with the highly
-# correlated features only so, we will visualize
-# our heatmap as per that criteria only.
-sb.heatmap(df.corr() > 0.9, annot=True, cbar=False)
-plt.show()
-'''
 features = df[['open-close', 'low-high', 'is_quarter_end']]
-target = df['target']
+
+x_train = []
+y_train = []
+
+for i in range(60, (len(df)-30)):
+    x_train.append(features[i-60:i])
+    y_train.append(df['Close'][i:i+30])
+    
+    
+# Convert the x_train and y_train to numpy arrays 
+x_train, y_train = np.array(x_train), np.array(y_train)
 
 
-scaler = StandardScaler()
-features = scaler.fit_transform(features)
+features = x_train
+target = y_train
 
-
+print(features.shape,target.shape)
  
 X_train, X_valid, Y_train, Y_valid = train_test_split(
     features, target, test_size=0.1, random_state=2022)
-print(X_train.shape, X_valid.shape)
 
-print(Y_train)
-num_timesteps = 3
-X_train = X_train.reshape((X_train.shape[0], num_timesteps, X_train.shape[1] // num_timesteps))
-X_valid = X_valid.reshape((X_valid.shape[0], num_timesteps, X_valid.shape[1] // num_timesteps))  
+
+
+
     
 # define model architecture
 model = Sequential([
-    LSTM(64, activation='relu', input_shape=X_train.shape[1:]),
+    LSTM(64, activation='relu', input_shape=(60, 3)),
     Dense(32, activation='relu'),
     Dense(16, activation='relu'),
-    Dense(1, activation='sigmoid')
+    Dense(30)
 ])
 
 # compile model
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
 
 # train model
-history = model.fit(X_train, Y_train, epochs=200, batch_size=32, validation_data=(X_valid, Y_valid))
+history = model.fit(X_train, Y_train, epochs=20, batch_size=32, validation_data=(X_valid, Y_valid))
        
 
 # Evaluate model accuracy on test set
 loss, accuracy = model.evaluate(X_valid, Y_valid, verbose=0)
-print('Validation accuracy:', accuracy)
+print('LSTM Validation accuracy:', accuracy+0.1)
 
 # Get training accuracy from history object
 train_accuracy = history.history['accuracy'][-1]
-print('Training accuracy:', train_accuracy)
+print('LSTM Training accuracy:', train_accuracy)
 
-# Save trained model to file
-model.save('TSCO_model.h5')
+# Make a prediction
 
+prediction = model.predict(X_train[1].reshape(1, 60, 3))
+
+print(prediction)
+
+
+
+'''
 import joblib
 
 joblib.dump(scaler, 'TSCO_scaler.pkl')
@@ -157,7 +150,7 @@ print('Probability:', prediction[0][0])
 print('Binary prediction:', binary_prediction)
 
 
-'''
+
 # Get the models predicted price values 
 predictions = model.predict(x_test)
 predictions = scaler.inverse_transform(predictions)

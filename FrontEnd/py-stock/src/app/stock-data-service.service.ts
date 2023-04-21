@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PredictStockPriceModel } from './PredictStockPriceModel';
+import fetch from 'node-fetch';
 
 @Injectable({
   providedIn: 'root'
@@ -20,4 +21,5 @@ export class StockDataService {
     console.log(stockData)
     return this.http.post<any>('http://127.0.0.1:5000/get_prediction?symbol='+selectedValue, stockData, {headers});
   }
+
 }
